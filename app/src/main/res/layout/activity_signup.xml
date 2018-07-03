@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="true"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:tint="@color/icons"
+                android:src="@drawable/ic_nature_people"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
+            <TextView
+                android:text="@string/app_name"
+                android:textColor="@color/icons"
+                android:textSize="30dp"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:text="Registro"
+            android:textAlignment="center"
+            android:textColor="@color/icons"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
+                android:textColorHint="@color/colorAccent"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/name_edit_text"
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="sans-serif-condensed"
+                    android:hint="Nombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:textColorHint="@color/colorAccent"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/email_edit_text"
+                    android:textColor="@color/colorAccent"
+                    android:fontFamily="sans-serif-condensed"
+                    android:hint="Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:textColorHint="@color/colorAccent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/password1_edit_text"
+                    android:textColor="@color/colorAccent"
+                    android:inputType="textPassword"
+                    android:fontFamily="sans-serif-condensed"
+                    android:hint="Contraseña"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:textColorHint="@color/colorAccent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/password2_edit_text"
+                    android:textColor="@color/colorAccent"
+                    android:inputType="textPassword"
+                    android:fontFamily="sans-serif-condensed"
+                    android:hint="Confirma contraseña"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/submit_button"
+                android:layout_marginTop="15dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Crear usuario"
+                android:textColor="@color/colorAccent"
+                android:background="@color/colorPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</ScrollView>
