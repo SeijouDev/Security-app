@@ -1,11 +1,8 @@
 package com.app.inpahu.securityapp;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -13,15 +10,18 @@ import android.widget.Toast;
 
 import com.app.inpahu.securityapp.Helpers.CustomTask;
 import com.app.inpahu.securityapp.Helpers.Generics;
-import com.app.inpahu.securityapp.Helpers.HttpHelper;
 import com.app.inpahu.securityapp.Helpers.OnTaskCompleted;
+import com.app.inpahu.securityapp.Helpers.PreferencesHelper;
+import com.app.inpahu.securityapp.Objects.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.regex.Pattern;
-
 public class SignupActivity extends AppCompatActivity {
+
+    private String nameTemp;
+    private String emailTemp;
+    private String passTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,13 @@ public class SignupActivity extends AppCompatActivity {
 
         findViewById(R.id.submit_button).setOnClickListener(signUpTask);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 
     private OnClickListener signUpTask = new OnClickListener() {
@@ -45,8 +52,12 @@ public class SignupActivity extends AppCompatActivity {
 
             if(valid != null)
                 Toast.makeText(getApplicationContext(), valid, Toast.LENGTH_SHORT).show();
-            else
-                new CustomTask.MyAsyncTask(SignupActivity.this, "/users/create",getData(name,email,pass1),signUpCompleted ).execute();
+            else {
+                nameTemp = name;
+                emailTemp = email;
+                passTemp = pass1;
+                new CustomTask.MyAsyncTask(SignupActivity.this, "/users/create", getData(name, email, pass1), signUpCompleted).execute();
+            }
 
         }
     };
@@ -90,6 +101,7 @@ public class SignupActivity extends AppCompatActivity {
             try {
                 JSONObject jobj = new JSONObject(response).getJSONObject("data");
                 int id = jobj.getInt("result");
+                PreferencesHelper.saveUser(getApplicationContext(), new User(id, nameTemp, emailTemp, passTemp));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }catch (Exception e){
