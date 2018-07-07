@@ -1,9 +1,15 @@
 package com.app.inpahu.securityapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -20,13 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //setting this before the layout is inflated is a good idea
-        //it 'should' ensure that the map has a writable location for the map cache, even without permissions
-        //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
-        //see also StorageUtils
-        //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's tile servers will get you banned based on this string
-
-        //inflate and create the map
         setContentView(R.layout.activity_main);
 
         map = (MapView) findViewById(R.id.map);
@@ -40,24 +39,43 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
         mapController.setCenter(startPoint);
 
+        (findViewById(R.id.fab_add_report)).setOnClickListener(fabCreateReportClicked);
+        (findViewById(R.id.search_address_button)).setOnClickListener(searchAddressClicked);
+
         
     }
 
     public void onResume(){
         super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
     public void onPause(){
         super.onPause();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
+
+    private OnClickListener fabCreateReportClicked = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(getApplicationContext(), CreateReportActivity.class));
+            finish();
+        }
+    };
+
+    private OnClickListener searchAddressClicked = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String address = String.valueOf(( (EditText) findViewById(R.id.address_request_edit_text)).getText()).trim();
+
+            if(address.length() > 0) {
+                Log.e("ADDRESS" , address);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "No has ingresado la dirección", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
 }
+
