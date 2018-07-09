@@ -14,6 +14,8 @@ import com.app.inpahu.securityapp.Helpers.CustomTask;
 import com.app.inpahu.securityapp.Helpers.Generics;
 import com.app.inpahu.securityapp.Helpers.HttpHelper;
 import com.app.inpahu.securityapp.Helpers.OnTaskCompleted;
+import com.app.inpahu.securityapp.Helpers.PreferencesHelper;
+import com.app.inpahu.securityapp.Objects.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +23,9 @@ import org.json.JSONObject;
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private String emailTemp;
+    private String passTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +54,11 @@ public class LoginActivity extends AppCompatActivity {
 
             if(valid != null)
                 Toast.makeText(getApplicationContext(), valid, Toast.LENGTH_SHORT).show();
-            else
-                new CustomTask.MyAsyncTask(LoginActivity.this,"/users/login", getData(email, pass), loginCompleted).execute();
-
+            else {
+                emailTemp = email;
+                passTemp = pass;
+                new CustomTask.MyAsyncTask(LoginActivity.this, "/users/login", getData(email, pass), loginCompleted).execute();
+            }
         }
 
     };
@@ -86,7 +93,9 @@ public class LoginActivity extends AppCompatActivity {
         public void onTaskCompleted(String response) {
             try {
                 JSONObject jobj = new JSONObject(response).getJSONObject("user");
-                Log.e("LOGIN" , jobj + "");
+                int id = jobj.getInt("id");
+                String name = jobj.getString("name");
+                PreferencesHelper.saveUser(getApplicationContext(), new User(id, name, emailTemp, passTemp));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             }catch (Exception e){

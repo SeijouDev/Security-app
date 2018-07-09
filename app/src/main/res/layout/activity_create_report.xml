@@ -19,19 +19,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <EditText style="@style/input"
+        <TextView style="@style/input"
+            android:id="@+id/date_edit_text"
+            android:clickable="true"
             android:hint="Fecha (dd/mm/aaaa)" />
 
-        <EditText style="@style/input"
+        <TextView style="@style/input"
+            android:id="@+id/hour_edit_text"
+            android:clickable="true"
             android:hint="Hora (HH:mm)" />
 
 
         <EditText style="@style/input"
+            android:id="@+id/address_edit_text"
+            android:enabled="false"
             android:hint="Dirección" />
 
         <TextView
             android:textAlignment="center"
-            android:text="Selecciona la ubicación en el mapa"
+            android:text="Toca para seleccionar una ubicación en el mapa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -44,6 +50,7 @@
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatButton
+        android:id="@+id/create_report_button"
         android:text="Guardar reporte"
         android:textColor="@color/icons"
         android:background="@color/colorPrimaryDark"

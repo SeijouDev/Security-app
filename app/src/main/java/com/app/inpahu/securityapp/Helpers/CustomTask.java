@@ -37,9 +37,43 @@ public class CustomTask {
             return HttpHelper.executePost(url,data);
         }
 
+        @Override
         protected void onPostExecute(String response){
             dialog.dismiss();
             taskCompleted.onTaskCompleted(response);
+        }
+    }
+
+    public static class GeocodeTask extends AsyncTask<String,String,String> {
+
+        private OnTaskCompleted taskCompleted;
+        private ProgressDialog dialog;
+        private Context mContext;
+        private String lat;
+        private String lng;
+
+        public GeocodeTask(Context c, double lat, double lng, OnTaskCompleted callback){
+            this.mContext = c;
+            this.taskCompleted = callback;
+            this.lat = String.valueOf(lat);
+            this.lng = String.valueOf(lng);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = ProgressDialog.show(mContext, "","Por favor espera ...", true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return HttpHelper.executeGeoPost(lat,lng);
+        }
+
+        @Override
+        protected void onPostExecute(String response){
+            dialog.dismiss();
+            taskCompleted.onTaskCompleted(this.lat + "|" + this.lng + "|" + response);
         }
     }
 }

@@ -2,57 +2,99 @@ package com.app.inpahu.securityapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import com.app.inpahu.securityapp.Helpers.Generics;
+import com.app.inpahu.securityapp.Helpers.OSMHelper;
+import com.app.inpahu.securityapp.Helpers.OnTaskCompleted;
+import com.app.inpahu.securityapp.Helpers.PreferencesHelper;
+import com.app.inpahu.securityapp.Helpers.SingleShotLocationProvider;
+
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
 
 public class MainActivity extends AppCompatActivity {
-    MapView map = null;
+    private MapView map = null;
+    private OSMHelper mapHelper;
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mContext = getApplicationContext();
 
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        setContentView(R.layout.activity_main);
-
-        map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-
-        IMapController mapController = map.getController();
-        mapController.setZoom(9d);
-        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
-        mapController.setCenter(startPoint);
-
-        (findViewById(R.id.fab_add_report)).setOnClickListener(fabCreateReportClicked);
-        (findViewById(R.id.search_address_button)).setOnClickListener(searchAddressClicked);
-
-        
+        if(!Generics.validatePermissions(mContext, this)){
+            Generics.requestPermissions(mContext, this);
+            return;
+        }
+        else {
+            configView();
+        }
     }
 
     public void onResume(){
         super.onResume();
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        if(map != null) map.onResume();
     }
 
     public void onPause(){
         super.onPause();
-        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+        if(map != null)  map.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                PreferencesHelper.deleteUser(mContext);
+                startActivity(new Intent(mContext, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        boolean result = true;
+
+        switch (requestCode) {
+            case 1: {
+                for(int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                        result = false;
+                    }
+                }
+            }
+        }
+
+        if(!result || permissions.length <= 0) {
+            Toast.makeText(mContext, "Es necesario aceptar los permisos para continuar", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        else {
+            configView();
+        }
     }
 
     private OnClickListener fabCreateReportClicked = new OnClickListener() {
@@ -75,6 +117,40 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "No has ingresado la dirección", Toast.LENGTH_SHORT).show();
             }
 
+        }
+    };
+
+    private void configView() {
+        setContentView(R.layout.activity_main);
+        setTitle(PreferencesHelper.getUser(mContext).getName());
+
+        (findViewById(R.id.fab_add_report)).setOnClickListener(fabCreateReportClicked);
+        (findViewById(R.id.search_address_button)).setOnClickListener(searchAddressClicked);
+        configMap();
+    }
+
+    private void configMap () {
+        map = findViewById(R.id.map);
+        mapHelper = new OSMHelper(map);
+        mapHelper.initMap(map);
+        mapHelper.setZoom(12d);
+        //mapHelper.setClickListener(getBaseContext());
+        SingleShotLocationProvider.requestSingleUpdate(mContext, getLocationCallback);
+    }
+
+    private OnTaskCompleted getLocationCallback = new OnTaskCompleted() {
+        @Override
+        public void onTaskCompleted(String response) {
+            double lat = 4.642511;
+            double lng = -74.091156;
+
+            if(response != null) {
+                lat = Float.parseFloat(response.split("\\|")[0]);
+                lng = Float.parseFloat(response.split("\\|")[1]);
+                mapHelper.setZoom(16d);
+            }
+
+            mapHelper.setCenter(lat,lng);
         }
     };
 }

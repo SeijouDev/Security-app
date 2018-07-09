@@ -45,4 +45,10 @@ public class PreferencesHelper {
         return user;
 
     }
+
+    public static void deleteUser(Context mContext) {
+        Editor editor = mContext.getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE).edit();
+        editor.clear();
+        editor.commit();
+    }
 }
