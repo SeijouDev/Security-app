@@ -13,17 +13,18 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.app.inpahu.securityapp.Helpers.CustomTask;
 import com.app.inpahu.securityapp.Helpers.Generics;
 import com.app.inpahu.securityapp.Helpers.OSMHelper;
 import com.app.inpahu.securityapp.Helpers.OnTaskCompleted;
 import com.app.inpahu.securityapp.Helpers.PreferencesHelper;
 import com.app.inpahu.securityapp.Helpers.SingleShotLocationProvider;
+import com.app.inpahu.securityapp.Objects.Report;
 
-import org.osmdroid.events.MapEventsReceiver;
-import org.osmdroid.util.GeoPoint;
+import org.json.JSONObject;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
-import org.osmdroid.views.overlay.Marker;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private MapView map = null;
@@ -127,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.fab_add_report)).setOnClickListener(fabCreateReportClicked);
         (findViewById(R.id.search_address_button)).setOnClickListener(searchAddressClicked);
         configMap();
+
+        getAllReports();
     }
 
     private void configMap () {
@@ -151,6 +154,21 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mapHelper.setCenter(lat,lng);
+        }
+    };
+
+    private ArrayList<Report> getAllReports() {
+
+        new CustomTask.MyAsyncTask(MainActivity.this, "/reports", new JSONObject(), getReportsCallback).execute();
+
+
+        return null;
+    }
+
+    private OnTaskCompleted getReportsCallback = new OnTaskCompleted() {
+        @Override
+        public void onTaskCompleted(String response) {
+            Log.e("RESPONSE", response);
         }
     };
 }

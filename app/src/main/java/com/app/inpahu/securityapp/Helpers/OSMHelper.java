@@ -1,9 +1,6 @@
 package com.app.inpahu.securityapp.Helpers;
 
 import android.content.Context;
-import android.widget.Toast;
-
-import com.app.inpahu.securityapp.CreateReportActivity;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapEventsReceiver;

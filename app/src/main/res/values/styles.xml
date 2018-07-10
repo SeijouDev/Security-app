@@ -15,6 +15,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="white_font">
+        <item name=""
+    </style>
+
     <style name="input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
