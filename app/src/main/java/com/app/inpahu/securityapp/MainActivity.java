@@ -21,6 +21,8 @@ import com.app.inpahu.securityapp.Helpers.PreferencesHelper;
 import com.app.inpahu.securityapp.Helpers.SingleShotLocationProvider;
 import com.app.inpahu.securityapp.Objects.Report;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.views.MapView;
 
@@ -169,7 +171,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onTaskCompleted(String response) {
             Log.e("RESPONSE", response);
+
+            try {
+
+                JSONArray arr = new JSONArray(response);
+                ArrayList<Report> reports = Report.getReportsFromJSONArray(arr);
+
+                for(int i = 0; i < reports.size(); i++) {
+                    Log.e("REPORT" , reports.get(i).getAddress());
+                }
+
+                showReports(reports);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     };
+
+    private void showReports(ArrayList<Report>reports) {
+        for(int i = 0; i < reports.size(); i++) {
+            Report r = reports.get(i);
+            mapHelper.addMarker(r.getLatitude(), r.getLongitude(), r.getAddress() + " - Reporte: " + Generics.getReportType(r.getType()));
+        }
+    }
 }
 

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">SecurityApp</string>
+
+    <string-array name="types_array">
+        <item>Robo con arma blanca</item>
+        <item>Robo con arma de fuego</item>
+        <item>Consumo de sustancias psicoactivas</item>
+        <item>Robo a vehículos</item>
+        <item>Grupos sospechosos</item>
+    </string-array>
+
 </resources>

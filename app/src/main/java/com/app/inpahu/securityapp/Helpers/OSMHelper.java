@@ -35,10 +35,11 @@ public class OSMHelper {
         this.mapController.setCenter(new GeoPoint(lat, lng));
     }
 
-    public Marker addMarker(double lat, double lng) {
+    public Marker addMarker(double lat, double lng, String title) {
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(lat,lng));
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle( (title != null) ? title : "Sin información" );
         map.getOverlays().add(marker);
         setZoom(map.getZoomLevelDouble());
         return marker;
@@ -57,7 +58,7 @@ public class OSMHelper {
                     mMarker = null;
                 }
 
-                mMarker = addMarker(p.getLatitude(),p.getLongitude());
+                mMarker = addMarker(p.getLatitude(),p.getLongitude() , null);
                 new CustomTask.GeocodeTask(mContext, p.getLatitude(),p.getLongitude(), reverseGeocodingCallback).execute();
                 return false;
             }

@@ -35,6 +35,11 @@
             android:enabled="false"
             android:hint="Dirección" />
 
+        <Spinner
+            android:id="@+id/types_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:textAlignment="center"
             android:text="Toca para seleccionar una ubicación en el mapa"

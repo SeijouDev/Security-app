@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ public class CreateReportActivity extends AppCompatActivity {
     private Context mContext;
     private String latTemp = "";
     private String lngTemp = "";
+    private int typeTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +93,24 @@ public class CreateReportActivity extends AppCompatActivity {
 
         findViewById(R.id.create_report_button).setOnClickListener(createReportClicked);
 
+        Spinner spinner = (Spinner) findViewById(R.id.types_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.types_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(spinnerListener);
+
         configMap();
     }
+
+    private AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            typeTemp = i+1;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {}
+    };
 
     private void configMap () {
         map = findViewById(R.id.map);
@@ -186,6 +206,7 @@ public class CreateReportActivity extends AppCompatActivity {
                     data.put("dates", date);
                     data.put("hours", hour);
                     data.put("id_user", u.getId());
+                    data.put("type", typeTemp);
                     data.put("states", false);
 
                     new CustomTask.MyAsyncTask(CreateReportActivity.this,"/reports/create",data,reportInsertedCallback).execute();

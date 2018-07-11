@@ -46,4 +46,28 @@ public class Generics {
 
         ActivityCompat.requestPermissions(activity, permissions , 1);
     }
+
+    public static String getReportType(int type) {
+        String result = "Desconocido";
+        switch (type) {
+            case 1: result = "Robo con arma blanca"; break;
+            case 2: result = "Robo con arma de fuego"; break;
+            case 3: result = "Robo sin armas"; break;
+            case 4: result = "Consumo de sustancias psicoactivas"; break;
+            case 5: result = "Robo a vehículos"; break;
+            case 6: result = "Grupos sospechosos"; break;
+        }
+
+        return result;
+    }
+
+    /*
+        1. Robo con arma blanca,
+        2. Robo con arma de fuego,
+        3. Robo sin armas,
+        4. Consumo de sustancias psicoactivas,
+        5. Robo a vehículos
+        6. Grupos sospechosos
+    */
+
 }
