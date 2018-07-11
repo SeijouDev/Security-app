@@ -44,6 +44,39 @@ public class CustomTask {
         }
     }
 
+    public static class MyAsyncGet extends AsyncTask<String,String,String> {
+
+        private OnTaskCompleted taskCompleted;
+        private ProgressDialog dialog;
+        private Context mContext;
+        private JSONObject data;
+        private String url;
+
+        public MyAsyncGet(Context c, String urlr , JSONObject params, OnTaskCompleted callback){
+            this.mContext = c;
+            this.taskCompleted = callback;
+            this.data = params;
+            this.url = urlr;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = ProgressDialog.show(mContext, "","Por favor espera ...", true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return HttpHelper.executeGet(url);
+        }
+
+        @Override
+        protected void onPostExecute(String response){
+            dialog.dismiss();
+            taskCompleted.onTaskCompleted(response);
+        }
+    }
+
     public static class GeocodeTask extends AsyncTask<String,String,String> {
 
         private OnTaskCompleted taskCompleted;
@@ -74,6 +107,37 @@ public class CustomTask {
         protected void onPostExecute(String response){
             dialog.dismiss();
             taskCompleted.onTaskCompleted(this.lat + "|" + this.lng + "|" + response);
+        }
+    }
+
+    public static class GeocodeAddressTask extends AsyncTask<String,String,String> {
+
+        private OnTaskCompleted taskCompleted;
+        private ProgressDialog dialog;
+        private Context mContext;
+        private String place;
+
+        public GeocodeAddressTask(Context c, String place, OnTaskCompleted callback){
+            this.mContext = c;
+            this.taskCompleted = callback;
+            this.place = String.valueOf(place);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = ProgressDialog.show(mContext, "","Por favor espera ...", true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return HttpHelper.executeGeoGet(place);
+        }
+
+        @Override
+        protected void onPostExecute(String response){
+            dialog.dismiss();
+            taskCompleted.onTaskCompleted(response);
         }
     }
 }

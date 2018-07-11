@@ -45,6 +45,17 @@ public class OSMHelper {
         return marker;
     }
 
+    public Marker addMarkerV2(Context mContext, double lat, double lng, String title, int idIcon) {
+        Marker marker = new Marker(map);
+        marker.setPosition(new GeoPoint(lat,lng));
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle( (title != null) ? title : "Sin información" );
+        marker.setIcon(mContext.getResources().getDrawable(idIcon));
+        map.getOverlays().add(marker);
+        setZoom(map.getZoomLevelDouble());
+        return marker;
+    }
+
     public void removeMarker(Marker marker) {
         map.getOverlays().remove(marker);
     }

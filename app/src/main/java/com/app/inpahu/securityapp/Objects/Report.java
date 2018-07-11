@@ -102,7 +102,7 @@ public class Report {
             String date = jobj.getString("date");
             String hour = jobj.getString("hour");
             int type = jobj.getInt("type");
-            String user_id = jobj.getString("user_id");
+            String user_id = jobj.getString("id_user");
 
             return new Report(id,address,latitude,longitude,date,hour,user_id,type);
 

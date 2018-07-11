@@ -222,6 +222,24 @@ public class CreateReportActivity extends AppCompatActivity {
         @Override
         public void onTaskCompleted(String response) {
             Log.e("RESP", ""+ response);
+            try {
+
+                if(response != null) {
+                    JSONObject jobj = new JSONObject(response).getJSONObject("data");
+
+                    if(jobj.getInt("result") > 0 ) {
+                        Toast.makeText(mContext, "Reporte creado exitosamente", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(mContext, MainActivity.class));
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(mContext, "Error creando el reporte", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 }

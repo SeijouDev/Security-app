@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(address.length() > 0) {
                 Log.e("ADDRESS" , address);
+                new CustomTask.GeocodeAddressTask(MainActivity.this , address,onGeocodeTaskCompleted ).execute();
             }
             else {
                 Toast.makeText(getApplicationContext(), "No has ingresado la dirección", Toast.LENGTH_SHORT).show();
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Report> getAllReports() {
 
-        new CustomTask.MyAsyncTask(MainActivity.this, "/reports", new JSONObject(), getReportsCallback).execute();
+        new CustomTask.MyAsyncGet(MainActivity.this, "/reports", new JSONObject(), getReportsCallback).execute();
 
 
         return null;
@@ -170,17 +171,10 @@ public class MainActivity extends AppCompatActivity {
     private OnTaskCompleted getReportsCallback = new OnTaskCompleted() {
         @Override
         public void onTaskCompleted(String response) {
-            Log.e("RESPONSE", response);
-
             try {
 
                 JSONArray arr = new JSONArray(response);
                 ArrayList<Report> reports = Report.getReportsFromJSONArray(arr);
-
-                for(int i = 0; i < reports.size(); i++) {
-                    Log.e("REPORT" , reports.get(i).getAddress());
-                }
-
                 showReports(reports);
 
             } catch (JSONException e) {
@@ -192,8 +186,37 @@ public class MainActivity extends AppCompatActivity {
     private void showReports(ArrayList<Report>reports) {
         for(int i = 0; i < reports.size(); i++) {
             Report r = reports.get(i);
-            mapHelper.addMarker(r.getLatitude(), r.getLongitude(), r.getAddress() + " - Reporte: " + Generics.getReportType(r.getType()));
+            int marker = getMarker(r.getType());
+            mapHelper.addMarkerV2(getApplicationContext(),r.getLatitude(), r.getLongitude(), r.getAddress() + " - Reporte: " + Generics.getReportType(r.getType()), marker);
         }
     }
+
+    private int getMarker(int type) {
+        int marker = R.drawable.marker_type_1;
+        switch (type) {
+            case 2: marker = R.drawable.marker_type_2; break;
+            case 3: marker = R.drawable.marker_type_3; break;
+            case 4: marker = R.drawable.marker_type_4; break;
+            case 5: marker = R.drawable.marker_type_5; break;
+            case 6: marker = R.drawable.marker_type_6; break;
+        }
+        return marker;
+    }
+
+    private OnTaskCompleted onGeocodeTaskCompleted = new OnTaskCompleted() {
+        @Override
+        public void onTaskCompleted(String response) {
+            try {
+                Log.e("RESP", response + "");
+                JSONObject jobj = new JSONArray(response).getJSONObject(0);
+                double lat = jobj.getDouble("lat");
+                double lng = jobj.getDouble("lon");
+                mapHelper.setCenter(lat,lng);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }
 
