@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SecurityApp</string>
+    <string name="app_name">AnzenApp</string>
 
     <string-array name="types_array">
         <item>Robo con arma blanca</item>
